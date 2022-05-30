@@ -1,0 +1,9 @@
+node.master: true
+node.data: true
+network.host: _local_
+transport.tcp.port: 9300
+http.port: 9200 
+bootstrap.memory_lock: false
+discovery.seed_hosts: ["es-cluster-0.elasticsearch","es-cluster-1.elasticsearch","es-cluster-2.elasticsearch"]
+cluster.initial_master_nodes: ["es-cluster-0","es-cluster-1","es-cluster-2"]
+xpack.security.enabled: true

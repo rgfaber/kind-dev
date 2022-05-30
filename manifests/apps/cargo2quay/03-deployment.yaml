@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: contacts-svc
+  name: contacts-svc-depl
+spec:
+  selector:
+    matchLabels:
+      io.kompose.service: contacts-svc
+  replicas: 3
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: contacts-svc
+    spec:
+      containers:
+      - env:
+        - name: ASPNETCORE_URLS
+          value: http://+:5081
+        - name: COUCH_CAN_REPLICATE
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_CAN_REPLICATE
+              name: contacts-svc-env
+        - name: COUCH_CLUSTER_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_CLUSTER_HOST
+              name: contacts-svc-env
+        - name: COUCH_CLUSTER_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_CLUSTER_PORT
+              name: contacts-svc-env
+        - name: COUCH_CLUSTER_PROTOCOL
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_CLUSTER_PROTOCOL
+              name: contacts-svc-env
+        - name: COUCH_CLUSTER_PWD
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_CLUSTER_PWD
+              name: contacts-svc-env
+        - name: COUCH_CLUSTER_USER
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_CLUSTER_USER
+              name: contacts-svc-env
+        - name: COUCH_LOCAL_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_LOCAL_HOST
+              name: contacts-svc-env
+        - name: COUCH_LOCAL_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_LOCAL_PORT
+              name: contacts-svc-env
+        - name: COUCH_LOCAL_PROTOCOL
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_LOCAL_PROTOCOL
+              name: contacts-svc-env
+        - name: COUCH_LOCAL_PWD
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_LOCAL_PWD
+              name: contacts-svc-env
+        - name: COUCH_LOCAL_USER
+          valueFrom:
+            configMapKeyRef:
+              key: COUCH_LOCAL_USER
+              name: contacts-svc-env
+        - name: CONTACTS_DB
+          valueFrom:
+            configMapKeyRef:
+              key: CONTACTS_DB
+              name: contacts-svc-env
+        - name: FACTORIES_DB
+          valueFrom:
+            configMapKeyRef:
+              key: FACTORIES_DB
+              name: contacts-svc-env
+        - name: XC_IS_TEST
+          valueFrom:
+            configMapKeyRef:
+              key: XC_IS_TEST
+              name: contacts-svc-env
+        image: docker.xc-lab.io/contacts-svc:20.8.1
+        name: contacts-svc
+        ports:
+          - containerPort: 5081
+            name: "cnt-svc-port"
+        resources: {}
+      hostname: contacts-svc
+      restartPolicy: Always
+status: {}

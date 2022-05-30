@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: couch-data                          
+  labels:
+    volume: couch-data
+spec:
+  storageClassName: local-storage
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /volume/couchdb-pms.local/data
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: couch-logs
+  labels:
+    volume: couch-logs
+spec:
+  storageClassName: local-storage
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /volume/couchdb-pms.local/logs

@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: minio-ngrs
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: s3.pms.local
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: minio-svc
+            servicePort: "minio-svc-port"

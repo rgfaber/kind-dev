@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: js-config
+data:
+  jetstream.conf: |
+    port: 4222
+    http: 8222
+    monitor_port: 8222
+
+    jetstream {
+      store_dir: "/nats/storage"
+    }
+
+    streaming {
+     ns: "nats://nats-svc:4222"
+     id: stan
+     store: file
+     dir: "/data/stan/store"
+    }
+
+    accounts: {
+      USERS: {
+        users: [
+            {user: a, password: a}
+        ]
+      },
+      SYS: { 
+        users: [
+            {user: admin, password: changeit}
+           ]
+      }
+    }
+
+    system_account: SYS
+
+
+
+    
+
+# HTTP monitoring port
+
+# This is for clustering multiple servers together.
+#cluster {
+#
+#  # Route connections to be received on any interface on port 6222
+#  port: 6222
+
+#  # Routes are protected, so need to use them with --routes flag
+#  # e.g. --routes=nats-route://ruser:T0pS3cr3t@otherdockerhost:6222
+#  authorization {
+#    user: ruser
+#    password: T0pS3cr3t
+#    timeout: 2
+#  }
+
+#  # Routes are actively solicited and connected to from this server.
+#  # This Docker image has none by default, but you can pass a
+#  # flag to the gnatsd docker image to create one to an existing server.
+#  routes = []
+#}

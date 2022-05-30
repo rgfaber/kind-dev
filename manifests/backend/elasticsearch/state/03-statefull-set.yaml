@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: es-cluster
+  namespace: default
+spec:
+  serviceName: elasticsearch-svc
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: elasticsearch
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch-svc
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+        resources:
+            limits:
+              cpu: 1000m
+            requests:
+              cpu: 100m
+        ports:
+        - containerPort: 9200
+          name: rest
+          protocol: TCP
+        - containerPort: 9300
+          name: inter-node
+          protocol: TCP
+        volumeMounts:
+        - name: es-data-pvc
+          mountPath: /usr/share/elasticsearch/data
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          readOnly: true
+          subPath: elasticsearch.yml
+        env:
+          - name: CLUSTER_NAME
+            value: k8s-logs
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: ES_JAVA_OPTS
+            value: "-Xms512m -Xmx512m"
+          - name: ELASTIC_USERNAME
+            value: "elastic"
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: elasticsearch-user-password
+                key: password
+          - name: KIBANA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: elasticsearch-user-password
+                key: password 
+          - name: discovery.seed_hosts
+            value: "es-cluster-0.elasticsearch-svc,es-cluster-1.elasticsearch-svc,es-cluster-2.elasticsearch-svc"
+          - name: cluster.initial_master_nodes
+            value: "es-cluster-0,es-cluster-1,es-cluster-2"
+      initContainers:
+      - name: fix-permissions
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /usr/share/elasticsearch/data"]
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: elasticsearch-data-persistent-storage
+          mountPath: /usr/share/elasticsearch/data
+      - name: increase-vm-max-map
+        image: busybox
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+      - name: increase-fd-ulimit
+        image: busybox
+        command: ["sh", "-c", "ulimit -n 65536"]
+        securityContext:
+          privileged: true
+      volumes:
+      - name: config
+        configMap:
+          name: elasticsearch-configmap
+  volumeClaimTemplates:
+  - metadata:
+      name: elasticsearch-data-persistent-storage
+      labels:
+        app.kubernetes.io/component: elasticsearch
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: elastic-local-storage
+      resources:
+        requests:
+          storage: 10Gi

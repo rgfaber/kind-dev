@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nats-ngrs
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: nats.local
+    http:
+      paths:
+        - path: /monitor
+          pathType: Prefix
+          backend:
+            service:
+              name: nats-monitor
+              port:
+                name: "nats-8222"
+        - path: /ui
+          pathType: Prefix
+          backend:
+            service:
+              name: nats-svc
+              port:
+                name: "monitor"
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: nats-svc
+              port:
+                name: "nats-4222"

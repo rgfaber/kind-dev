@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: contacts-ingress
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: contacts.xkn.cloud
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: contacts-svc
+            servicePort: "cnt-svc-port"

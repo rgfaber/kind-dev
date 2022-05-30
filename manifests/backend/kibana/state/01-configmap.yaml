@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: default
+  labels:
+    app.kubernetes.io/component: kibana
+  name: kibana-configmap
+data:
+  kibana.yml: |-
+    server.host: 0.0.0.0
+    xpack.monitoring.ui.container.elasticsearch.enabled: "true"
+    server.name: "kibana-k8s"
+    xpack.security.audit.enabled: "true"
+    xpack.security.enabled: "true"
+    xpack.monitoring.enabled: "true"
+    xpack.reporting.enabled: "true"
+    elasticsearch:
+      hosts: ${ELASTICSEARCH_HOSTS}
+      username: ${ELASTICSEARCH_USER}
+      password: ${ELASTICSEARCH_PASSWORD}
+

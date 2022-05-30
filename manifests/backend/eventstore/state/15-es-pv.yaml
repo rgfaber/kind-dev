@@ -1,0 +1,155 @@
+### DATA
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: es-pv-data-0
+  labels:
+    type: local
+    volume: es-data-vol
+spec:  
+  storageClassName: es-retain
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/volume/logatron/eventstore-0/data"
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: es-pv-data-1
+  labels:
+    type: local
+    volume: es-data-vol
+spec:  
+  storageClassName: es-retain
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/volume/logatron/eventstore-1/data"    
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: es-pv-data-2
+  labels:
+    type: local
+    volume: es-data-vol
+spec:  
+  storageClassName: es-retain
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/volume/logatron/eventstore-2/data"    
+### INDEX
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: es-pv-index-0
+  labels:
+    type: local
+    volume: es-index-vol
+spec:  
+  storageClassName: es-retain
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/volume/logatron/eventstore-0/index"
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: es-pv-index-1
+  labels:
+    type: local
+    volume: es-index-vol
+spec:  
+  storageClassName: es-retain
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/volume/logatron/eventstore-1/index"
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: es-pv-index-2
+  labels:
+    type: local
+    volume: es-index-vol
+spec:  
+  storageClassName: es-retain
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/volume/logatron/eventstore-2/index"
+
+### LOG
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: es-pv-log-0
+  labels:
+    type: local
+    volume: es-log-vol
+spec:  
+  storageClassName: es-retain
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/volume/logatron/eventstore-0/log"
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: es-pv-log-1
+  labels:
+    type: local
+    volume: es-log-vol
+spec:  
+  storageClassName: es-retain
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/volume/logatron/eventstore-1/log"
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: es-pv-log-2
+  labels:
+    type: local
+    volume: es-log-vol
+spec:  
+  storageClassName: es-retain
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/volume/logatron/eventstore-2/log"
+

@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cadvisor-service
+  namespace: cadvisor
+  labels:
+    app: cadvisor
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    name: cadv-8080
+  selector:
+    app: cadvisor         # label selector

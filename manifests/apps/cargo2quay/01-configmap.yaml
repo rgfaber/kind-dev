@@ -1,0 +1,25 @@
+apiVersion: v1
+data:
+  COUCH_CLUSTER_HOST: sofa.xc-lab.io
+  COUCH_CLUSTER_PORT: "443"
+  COUCH_CLUSTER_PROTOCOL: https
+  COUCH_CLUSTER_PWD: X3!k0n
+  COUCH_CLUSTER_USER: root
+  COUCH_LOCAL_HOST: couch-service
+  COUCH_LOCAL_PORT: "5984"
+  COUCH_LOCAL_PROTOCOL: http
+  # COUCH_LOCAL_PWD: W341110v3A600D3eEr
+  # COUCH_LOCAL_USER: appuser
+  COUCH_LOCAL_USER: clusterproc
+  COUCH_LOCAL_PWD: X31k0nPr0d4V0u
+
+  COUCH_CAN_REPLICATE: "true"
+  CONTACTS_DB: contact-prod
+  FACTORIES_DB: factory-prod
+  XC_IS_TEST: "false"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: contacts-svc-env
+  name: contacts-svc-env

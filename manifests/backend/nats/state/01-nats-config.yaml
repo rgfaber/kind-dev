@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nats-config
+data:
+  nats.conf: |
+    pid_file: "/var/run/nats/nats.pid"
+    http: 8222
+    accounts: {
+    USERS: {
+        users: [
+            {user: a, password: a}
+        ]
+      },
+    SYS: { 
+        users: [
+            {user: admin, password: changeit}
+           ]
+      },
+    }
+    system_account: SYS

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: contacts-svc
+  name: contacts-svc
+spec:
+  ports:
+  - name: "5081"
+    port: 5081
+    targetPort: "cnt-svc-port"
+  selector:
+    io.kompose.service: contacts-svc
+status:
+  loadBalancer: {}

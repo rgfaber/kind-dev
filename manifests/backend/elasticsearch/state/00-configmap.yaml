@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: default
+  name: elasticsearch-configmap
+  labels:
+    app.kubernetes.io/component: elasticsearch
+    role: master
+data:
+  elasticsearch.yml: |-
+    cluster.name: ${CLUSTER_NAME}
+    node.name: ${NODE_NAME}
+    # discovery.seed_hosts: ${NODE_LIST}
+    # cluster.initial_master_nodes: ${MASTER_NODES_LIST}
+
+    network.host: 0.0.0.0
+
+    node:
+      master: true
+      data: true
+      ingest: true
+
+    xpack.security.enabled: true
+    xpack.monitoring.collection.enabled: true
+    xpack.security.audit.enabled: true

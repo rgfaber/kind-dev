@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  labels:
+    app: mysql
+data:
+  master.cnf: |
+    # Apply this config only on the master.
+    [mysqld]
+    log-bin
+  slave.cnf: |
+    # Apply this config only on slaves.
+    [mysqld]
+    super-read-only
+  MYSQL_USER: c4mund4
+  MYSQL_ROOT_PASSWORD: my5Q1r00tP@55w0rD
+  MYSQL_PASSWORD: my5Q1c4mund4P@55w0rD
+  MYSQL_DATABASE: camunda_db

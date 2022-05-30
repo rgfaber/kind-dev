@@ -1,0 +1,25 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: eventstore-pv-volume
+  labels:
+    type: local
+spec:  
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: eventstore-pv-claim
+spec:  
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2.5Gi

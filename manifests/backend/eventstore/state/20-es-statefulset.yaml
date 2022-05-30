@@ -1,0 +1,205 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: eventstore-cluster
+spec:
+  selector:
+    matchLabels:
+      app: eventstore-cluster
+  replicas: 3  ## Must match EVENTSTORE_CLUSTER_SIZE
+  serviceName: eventstore-cluster
+  template:
+    metadata:
+      labels:
+        app: eventstore-cluster  
+    spec:      
+
+      # Allow non-root user to access persistent volume https://github.com/EventStore/EventStore/issues/2808
+      securityContext:
+        # fsGroup: 2000
+        runAsUser: 0  # Run as root https://stackoverflow.com/questions/48406516/run-container-as-root-user (because writer.chk fail)
+      
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - eventstore-cluster
+              topologyKey: kubernetes.io/hostname
+
+
+      containers:
+        - name: eventstore
+          image: eventstore/eventstore
+          env: 
+            - name: EVENTSTORE_DISCOVER_VIA_DNS
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_DISCOVER_VIA_DNS
+            - name: EVENTSTORE_INT_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: EVENTSTORE_EXT_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: EVENTSTORE_INSECURE                  
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_INSECURE
+            - name: EVENTSTORE_INT_TCP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_INT_TCP_PORT
+            - name: EVENTSTORE_EXT_TCP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_EXT_TCP_PORT
+            - name: EVENTSTORE_INT_HTTP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_INT_HTTP_PORT
+            - name: EVENTSTORE_EXT_HTTP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_EXT_HTTP_PORT
+            - name: EVENTSTORE_CLUSTER_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_CLUSTER_SIZE
+            - name: EVENTSTORE_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_DB
+            - name: EVENTSTORE_LOG
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_LOG
+            - name: EVENTSTORE_INDEX
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_INDEX
+            - name: EVENTSTORE_CLUSTER_DNS  ### Will Match our Service Name
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_CLUSTER_DNS
+            - name: EVENTSTORE_CLUSTER_GOSSIP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_CLUSTER_GOSSIP_PORT
+            - name: EVENTSTORE_GOSSIP_ALLOWED_DIFFERENCE_MS
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_GOSSIP_ALLOWED_DIFFERENCE_MS
+            - name: EVENTSTORE_INT_HTTP_PREFIXES
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_INT_HTTP_PREFIXES
+            - name: EVENTSTORE_EXT_HTTP_PREFIXES
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_EXT_HTTP_PREFIXES
+            - name: EVENTSTORE_DEV
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_DEV
+            - name: EVENTSTORE_RUN_PROJECTIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_RUN_PROJECTIONS
+            - name: EVENTSTORE_START_STANDARD_PROJECTIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_START_STANDARD_PROJECTIONS
+            - name: EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP
+              valueFrom:
+                configMapKeyRef:
+                  name: es-config
+                  key: EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP
+
+
+          ports:
+            - containerPort: 2113
+              name: eventstore-web
+            - containerPort: 2114
+            - containerPort: 1111
+            - containerPort: 1112 
+            - containerPort: 1113
+              name: eventstore-tcp
+            - containerPort: 2112
+              name: gossip
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 2113
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+          volumeMounts:
+            - mountPath: /usr/data/eventstore-db
+              name: eventstore-data
+            - mountPath: /usr/data//eventstore-index
+              name: eventstore-index
+            - mountPath: /usr/data//eventstore-log
+              name: eventstore-log
+          
+          securityContext:
+            allowPrivilegeEscalation: false
+
+  volumeClaimTemplates:
+  - metadata:
+      name: eventstore-data
+    spec:
+      selector:
+        matchLabels:
+          volume: es-data-vol
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: es-retain
+      resources:
+        requests:
+          storage: 10Gi 
+  - metadata:
+      name: eventstore-index
+    spec:
+      selector:
+        matchLabels:
+          volume: es-index-vol
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: es-retain
+      resources:
+        requests:
+          storage: 10Gi 
+  - metadata:
+      name: eventstore-log
+    spec:
+      selector:
+        matchLabels:
+          volume: es-log-vol
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: es-retain
+      resources:
+        requests:
+          storage: 10Gi 

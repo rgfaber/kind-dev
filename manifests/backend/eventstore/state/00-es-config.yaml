@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: es-env
+  name: es-config
+data:
+  EVENTSTORE_INT_TCP_PORT: "1111"
+  EVENTSTORE_EXT_TCP_PORT: "1112"
+  EVENTSTORE_INT_HTTP_PORT: "2114"
+  EVENTSTORE_EXT_HTTP_PORT: "2113"
+  EVENTSTORE_CLUSTER_SIZE: "3"
+  EVENTSTORE_DISCOVER_VIA_DNS: "true"
+  EVENTSTORE_CLUSTER_DNS: "eventstore-cluster"
+  EVENTSTORE_CLUSTER_GOSSIP_PORT: "2114"
+  EVENTSTORE_GOSSIP_ALLOWED_DIFFERENCE_MS: "600000"
+  # EVENTSTORE_INT_HTTP_PREFIXES: "http://*:2114/"
+  # EVENTSTORE_EXT_HTTP_PREFIXES: "http://*:2113/"
+  EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP: "true"
+
+  EVENTSTORE_RUN_PROJECTIONS: "All"
+  EVENTSTORE_START_STANDARD_PROJECTIONS: "true"
+  EVENTSTORE_INSECURE: "true"
+  EVENTSTORE_DEV: "true"
+  EVENTSTORE_INDEX: "/usr/data/eventstore-index"
+  EVENTSTORE_LOG: "/usr/data/eventstore-log"
+  EVENTSTORE_DB: "/usr/data/eventstore-db"
