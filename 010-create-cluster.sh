@@ -88,6 +88,14 @@ kubectl apply -f github-secret.yaml
 
 rm github-secret.yaml
 
+echo "DO YOU WISH TO ADD macula.io SECRET? (y/N)"
+
+read add_macula_secret
+
+if [ "$add_macula_secret" == "y" ];
+then
+
+
 cat > gitmac-secret.yaml <<EOF
 apiVersion: v1
 kind: Secret
@@ -102,6 +110,8 @@ EOF
 kubectl apply -f gitmac-secret.yaml
 
 rm gitmac-secret.yaml
+
+fi
 
 # helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 # helm repo update
@@ -122,11 +132,12 @@ rm gitmac-secret.yaml
 echo "===================================="
 echo "     Applying NGINX Ingress         "
 echo "===================================="
-# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 
 # kubectl apply -f manifests/cluster/02-ingress-deploy.yaml
 # kubectl apply -f manifests/cluster/03-ingress-patch.yaml
-kubectl apply -f ./manifests/cluster/04-ingress-deploy-21.07.29.yaml
+
+# kubectl apply -f ./manifests/cluster/04-ingress-deploy-21.07.29.yaml
 
 # echo '########## WORKAROUND CODE #############################################################################'
 # echo '## IMPORTANT: THE LINE THAT FOLLOWS IS TO TACKLE THE ingress validation error bug'

@@ -34,6 +34,9 @@ kubectl apply -f manifests/backend/nats/state
 echo "Starting EventStoreDB"
 kubectl apply -f manifests/backend/eventstore/state
 
+echo "Starting Zookeeper + Kafka"
+kubectl apply --kustomize manifests/backend/kafka-manifests/base 
+
 
 # # kubectl delete -f manifests/backend/nats/state2
 # # kubectl apply -f manifests/backend/nats/state2
