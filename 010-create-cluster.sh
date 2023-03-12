@@ -3,9 +3,10 @@
 set -eu
 
 
-export PLATFORM=logatron
-export CLUSTER_NAME=logatron.local
-export REGISTRY=registry.macula.io
+
+export PLATFORM=docktrace
+export CLUSTER_NAME=docktrace.edge
+export REGISTRY=docktrace.azurecr.io
 
 
 
@@ -38,11 +39,11 @@ echo 'REF: https://github.com/nats-io/k8s/issues/9#issuecomment-887154588'
 echo 'Adding external node IPS'
 echo '********************************************************************'
 
-export KIND_CLUSTER=logatron
-export NODE_CP="$KIND_CLUSTER".local-control-plane
-export NODE_1="$KIND_CLUSTER".local-worker
-export NODE_2="$KIND_CLUSTER".local-worker2
-export NODE_3="$KIND_CLUSTER".local-worker3
+
+export NODE_CP="$CLUSTER_NAME"-control-plane
+export NODE_1="$CLUSTER_NAME"-worker
+export NODE_2="$CLUSTER_NAME"-worker2
+export NODE_3="$CLUSTER_NAME"-worker3
 
 
 kubectl label node "$NODE_CP" nats.io/node-external-ip=$(hostname -I | awk '{print $1}')
@@ -56,11 +57,11 @@ echo
 echo 'Creating Docker Secrets'
 echo
 
-kubectl create secret docker-registry mac-regcred \
+kubectl create secret docker-registry azdo-regcred \
           --docker-server="$REGISTRY" \
-          --docker-username="$LOGATRON_CID_USER" \
-          --docker-password="$LOGATRON_CID_PWD" \
-          --docker-email="$LOGATRON_CID_EMAIL"
+          --docker-username="$DOCKTRACE_OCI_USR" \
+          --docker-password="$DOCKTRACE_OCI_PWD1" \
+          --docker-email="$DOCKTRACE_OCI_EMAIL"
 
 kubectl create secret docker-registry regcred \
           --docker-server="$DOCKERHUB_REGISTRY" \
@@ -88,28 +89,28 @@ kubectl apply -f github-secret.yaml
 
 rm github-secret.yaml
 
-echo "DO YOU WISH TO ADD macula.io SECRET? (y/N)"
+echo "DO YOU WISH TO ADD docktrace.azurecr.io SECRET? (y/N)"
 
-read add_macula_secret
+read add_azdo_secret
 
-if [ "$add_macula_secret" == "y" ];
+if [ "$add_azdo_secret" == "y" ];
 then
 
 
-cat > gitmac-secret.yaml <<EOF
+cat > azdo-secret.yaml <<EOF
 apiVersion: v1
 kind: Secret
 metadata:
-  name: gitmac-secret
+  name: azdo-secret
 type: kubernetes.io/basic-auth
 stringData:
-  username: $LOGATRON_CID_USER
-  password: $LOGATRON_CID_PWD
+  username: $DOCKTRACE_OCI_USR
+  password: $DOCKTRACE_OCI_PWD1
 EOF
 
-kubectl apply -f gitmac-secret.yaml
+kubectl apply -f azdo-secret.yaml
 
-rm gitmac-secret.yaml
+rm azdo-secret.yaml
 
 fi
 

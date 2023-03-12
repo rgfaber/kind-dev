@@ -27,15 +27,16 @@ kubectl apply -f manifests/backend/couchdb/state
 # echo "Starting Object Storage"
 # kubectl delete -f manifests/backend/minio/state
 # kubectl apply -f manifests/backend/minio/state
-echo "Starting NATS and STAN"
-kubectl apply -f manifests/backend/nats/state
+
+# echo "Starting NATS and STAN"
+# kubectl apply -f manifests/backend/nats/state
 
 
-echo "Starting EventStoreDB"
-kubectl apply -f manifests/backend/eventstore/state
+# echo "Starting EventStoreDB"
+# kubectl apply -f manifests/backend/eventstore/state
 
-echo "Starting Zookeeper + Kafka"
-kubectl apply --kustomize manifests/backend/kafka-manifests/base 
+# echo "Starting Zookeeper + Kafka"
+# kubectl apply --kustomize manifests/backend/kafka-manifests/state
 
 
 # # kubectl delete -f manifests/backend/nats/state2
